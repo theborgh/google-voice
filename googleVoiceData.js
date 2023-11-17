@@ -6,21 +6,77 @@ const freeTiers = [
   { voiceType: "Standard", freeCharsPerMonth: 4_000_000 },
 ];
 
+const voiceCodes = {
+  FemaleBritish_WaveNet: "en-GB-News-H",
+  FemaleAussie_Standard: "en-AU-Standard-A",
+  FemaleUS_WaveNet: "en-US-News-L",
+  FemaleFilipino_WaveNet: "fil-PH-Wavenet-A",
+  FemaleIndian_Neural2: "en-IN-Neural2-A",
+  MaleUS_WaveNet: "en-US-News-N",
+  MaleUS2_WaveNet: "en-US-Wavenet-J",
+  MaleUS3_Neural2: "en-US-Neural2-D",
+  MaleUS4Polyglot_Standard: "en-US-Polyglot-1",
+  MaleIndian_Neural2: "en-IN-Neural2-B",
+  MaleJapanese_WaveNet: "ja-JP-Wavenet-D",
+  MaleGerman_Neural2: "de-DE-Neural2-B",
+  MaleItalian_Neural2: "it-IT-Neural2-C",
+};
+
 // See voices at https://cloud.google.com/text-to-speech/docs/voices
 const voicePool = [
-  { voiceCode: "en-GB-News-H", sex: "female", voiceType: "WaveNet" },
-  { voiceCode: "en-AU-Standard-A", sex: "female", voiceType: "Standard" },
-  { voiceCode: "en-US-News-L", sex: "female", voiceType: "WaveNet" },
-  { voiceCode: "fil-PH-Wavenet-A", sex: "female", voiceType: "WaveNet" },
-  { voiceCode: "en-IN-Standard-D", sex: "female", voiceType: "Standard" },
-  { voiceCode: "en-US-News-N", sex: "male", voiceType: "WaveNet" },
-  { voiceCode: "en-US-Wavenet-J", sex: "male", voiceType: "WaveNet" },
-  { voiceCode: "en-US-Neural2-D", sex: "male", voiceType: "Neural2" },
-  { voiceCode: "en-US-Polyglot-1", sex: "male", voiceType: "Standard" },
-  { voiceCode: "en-IN-Neural2-B", sex: "male", voiceType: "Neural2" },
-  { voiceCode: "ja-JP-Wavenet-D", sex: "male", voiceType: "WaveNet" },
-  { voiceCode: "de-DE-Neural2-B", sex: "male", voiceType: "Neural2" },
-  { voiceCode: "it-IT-Neural2-C", sex: "male", voiceType: "Neural2" },
+  {
+    voiceCode: voiceCodes.FemaleBritish_WaveNet,
+    sex: "female",
+    voiceType: "WaveNet",
+  },
+  {
+    voiceCode: voiceCodes.FemaleAussie_Standard,
+    sex: "female",
+    voiceType: "Standard",
+  },
+  {
+    voiceCode: voiceCodes.FemaleUS_WaveNet,
+    sex: "female",
+    voiceType: "WaveNet",
+  },
+  {
+    voiceCode: voiceCodes.FemaleFilipino_WaveNet,
+    sex: "female",
+    voiceType: "WaveNet",
+  },
+  {
+    voiceCode: voiceCodes.FemaleIndian_Neural2,
+    sex: "female",
+    voiceType: "Neural2",
+  },
+  { voiceCode: voiceCodes.MaleUS_WaveNet, sex: "male", voiceType: "WaveNet" },
+  { voiceCode: voiceCodes.MaleUS2_WaveNet, sex: "male", voiceType: "WaveNet" },
+  { voiceCode: voiceCodes.MaleUS3_Neural2, sex: "male", voiceType: "Neural2" },
+  {
+    voiceCode: voiceCodes.MaleUS4Polyglot_Standard,
+    sex: "male",
+    voiceType: "Standard",
+  },
+  {
+    voiceCode: voiceCodes.MaleIndian_Neural2,
+    sex: "male",
+    voiceType: "Neural2",
+  },
+  {
+    voiceCode: voiceCodes.MaleJapanese_WaveNet,
+    sex: "male",
+    voiceType: "WaveNet",
+  },
+  {
+    voiceCode: voiceCodes.MaleGerman_Neural2,
+    sex: "male",
+    voiceType: "Neural2",
+  },
+  {
+    voiceCode: voiceCodes.MaleItalian_Neural2,
+    sex: "male",
+    voiceType: "Neural2",
+  },
 ];
 
-module.exports = { voicePool, freeTiers };
+module.exports = { voicePool, freeTiers, voiceCodes };
