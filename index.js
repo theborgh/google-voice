@@ -5,23 +5,30 @@ const util = require("util");
 const client = new textToSpeech.TextToSpeechClient();
 
 async function readTranscript() {
-  // Read the contents of input.txt
-  const text = fs.readFileSync("input.txt", "utf8");
+  const inputText = fs.readFileSync("input.txt", "utf8");
+  const stats = fs.readFileSync("input.txt", "utf8");
+
+  const freeTiers = [
+    { voiceType: "Neural2", freeCharsPerMonth: 800_000 }, // 1_000_000 bytes
+    { voiceType: "Polyglot", freeCharsPerMonth: 800_000 }, // 1_000_000 bytes
+    { voiceType: "Studio", freeCharsPerMonth: 80_000 }, // 100_000 bytes
+    { voiceType: "WaveNet", freeCharsPerMonth: 1_000_000 },
+    { voiceType: "Standard", freeCharsPerMonth: 4_000_000 },
+  ];
 
   // See voices at https://cloud.google.com/text-to-speech/docs/voices
-  const suitableFemaleVoices = [
-    "en-GB-News-H",
-    "en-AU-Standard-A",
-    "en-US-News-L",
-    "fil-PH-Wavenet-A",
+  const voicePool = [
+    { voiceCode: "en-GB-News-H", sex: "female", voiceType: "WaveNet" },
+    { voiceCode: "en-AU-Standard-A", sex: "female", voiceType: "Standard" },
+    { voiceCode: "en-US-News-L", sex: "female", voiceType: "WaveNet" },
+    { voiceCode: "fil-PH-Wavenet-A", sex: "female", voiceType: "WaveNet" },
+    { voiceCode: "en-US-News-N", sex: "male", voiceType: "WaveNet" },
+    { voiceCode: "en-US-Wavenet-J", sex: "male", voiceType: "WaveNet" },
+    { voiceCode: "en-US-Neural2-D", sex: "male", voiceType: "Neural2" },
+    { voiceCode: "en-IN-Neural2-B", sex: "male", voiceType: "Neural2" },
+    { voiceCode: "en-US-Polyglot-1", sex: "male", voiceType: "Standard" },
   ];
-  const suitableMaleVoices = [
-    "en-US-News-N",
-    "en-US-Wavenet-J",
-    "en-US-Neural2-D",
-    "en-US-Polyglot-1",
-    "en-IN-Neural2-B",
-  ];
+
   const characterVoices = [
     { separator: /^Q[\.:]/, voiceCode: "en-US-Wavenet-J" },
     { separator: /^(A[\.:]|THE WITNESS:)/, voiceCode: "en-IN-Neural2-B" },
@@ -33,8 +40,7 @@ async function readTranscript() {
   ];
   const defaultVoice = "de-DE-Neural2-B";
 
-  // Separate the text into chunks based on line starts.
-  const chunks = text.split("\r\n\r\n");
+  const chunks = inputText.split("\r\n\r\n");
   const audioContent = [];
   const startTime = new Date();
 
@@ -61,7 +67,6 @@ async function readTranscript() {
     };
 
     const [response] = await client.synthesizeSpeech(request);
-
     audioContent.push(response.audioContent);
   }
 
