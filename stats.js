@@ -49,15 +49,17 @@ const writeStats = (stats) => {
 const logStats = (stats) => {
   console.log("Stats:");
   for (entry in stats) {
-    const budget = freeTiers.find(
-      (e) => e.voiceType === entry.split(" ")[0]
-    ).freeCharsPerMonth;
-    console.log(
-      `${entry}: ${stats[entry].charCount} (${(
-        (stats[entry].charCount * 100) /
-        budget
-      ).toFixed(2)}% of monthly free tier)`
-    );
+    if (entry.toString().split(" ")[1] === "m") {
+      const budget = freeTiers.find(
+        (e) => e.voiceType === entry.split(" ")[0]
+      ).freeCharsPerMonth;
+      console.log(
+        `${entry}: ${stats[entry].charCount} (${(
+          (stats[entry].charCount * 100) /
+          budget
+        ).toFixed(2)}% of monthly free tier)`
+      );
+    }
   }
 };
 
