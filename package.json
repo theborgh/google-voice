@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/text-to-speech": "^5.0.1"
+    "@google-cloud/text-to-speech": "^5.0.1",
+    "play-sound": "^1.1.6"
   }
 }

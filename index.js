@@ -4,7 +4,7 @@ const util = require("util");
 
 const client = new textToSpeech.TextToSpeechClient();
 
-async function quickStart() {
+async function readTranscript() {
   // Read the contents of input.txt
   const text = fs.readFileSync("input.txt", "utf8");
 
@@ -20,10 +20,11 @@ async function quickStart() {
     "en-US-Wavenet-J",
     "en-US-Neural2-D",
     "en-US-Polyglot-1",
+    "en-IN-Neural2-B",
   ];
   const characterVoices = [
     { separator: /^Q[\.:]/, voiceCode: "en-US-Wavenet-J" },
-    { separator: /^(A[\.:]|THE WITNESS:)/, voiceCode: "en-US-Neural2-D" },
+    { separator: /^(A[\.:]|THE WITNESS:)/, voiceCode: "en-IN-Neural2-B" },
     { separator: /^THE CLERK:/, voiceCode: "en-IN-Standard-D" },
     { separator: /^THE COURT:/, voiceCode: "ja-JP-Wavenet-D" },
     { separator: /^MR. BAKER:/, voiceCode: "en-US-Wavenet-J" },
@@ -35,6 +36,7 @@ async function quickStart() {
   // Separate the text into chunks based on line starts.
   const chunks = text.split("\r\n\r\n");
   const audioContent = [];
+  const startTime = new Date();
 
   for (const chunk of chunks) {
     // Get the voice code for the chunk
@@ -68,8 +70,13 @@ async function quickStart() {
   // Write the binary audio content to a local file
   const writeFile = util.promisify(fs.writeFile);
   await writeFile("output.mp3", concatenatedAudio, "binary");
+  const endTime = new Date();
 
-  console.log("Audio content written to file: output.mp3");
+  console.log(
+    `Audio content generated in ${
+      (endTime - startTime) / 1000
+    } seconds and written to output.mp3`
+  );
 }
 
-quickStart();
+readTranscript();
