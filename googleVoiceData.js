@@ -6,6 +6,8 @@ const freeTiers = [
   { voiceType: "Standard", freeCharsPerMonth: 4_000_000 },
 ];
 
+// See voices at https://cloud.google.com/text-to-speech/docs/voices
+// MUST name the keys with _ and then exactly the voiceType for stats to work
 const voiceCodes = {
   FemaleBritish_WaveNet: "en-GB-News-H",
   FemaleAussie_Standard: "en-AU-Standard-A",
@@ -22,51 +24,4 @@ const voiceCodes = {
   MaleItalian_Neural2: "it-IT-Neural2-C",
 };
 
-// See voices at https://cloud.google.com/text-to-speech/docs/voices
-const voicePool = [
-  {
-    voiceCode: voiceCodes.FemaleBritish_WaveNet,
-    voiceType: "WaveNet",
-  },
-  {
-    voiceCode: voiceCodes.FemaleAussie_Standard,
-    voiceType: "Standard",
-  },
-  {
-    voiceCode: voiceCodes.FemaleUS_WaveNet,
-    voiceType: "WaveNet",
-  },
-  {
-    voiceCode: voiceCodes.FemaleFilipino_WaveNet,
-    voiceType: "WaveNet",
-  },
-  {
-    voiceCode: voiceCodes.FemaleIndian_Neural2,
-    voiceType: "Neural2",
-  },
-  { voiceCode: voiceCodes.MaleUS_WaveNet, voiceType: "WaveNet" },
-  { voiceCode: voiceCodes.MaleUS2_WaveNet, voiceType: "WaveNet" },
-  { voiceCode: voiceCodes.MaleUS3_Neural2, voiceType: "Neural2" },
-  {
-    voiceCode: voiceCodes.MaleUS4Polyglot_Standard,
-    voiceType: "Standard",
-  },
-  {
-    voiceCode: voiceCodes.MaleIndian_Neural2,
-    voiceType: "Neural2",
-  },
-  {
-    voiceCode: voiceCodes.MaleJapanese_WaveNet,
-    voiceType: "WaveNet",
-  },
-  {
-    voiceCode: voiceCodes.MaleGerman_Neural2,
-    voiceType: "Neural2",
-  },
-  {
-    voiceCode: voiceCodes.MaleItalian_Neural2,
-    voiceType: "Neural2",
-  },
-];
-
-module.exports = { voicePool, freeTiers, voiceCodes };
+module.exports = { freeTiers, voiceCodes };

@@ -1,7 +1,7 @@
 const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs");
 const util = require("util");
-const { voicePool } = require("./googleVoiceData");
+const { voiceCodes } = require("./googleVoiceData");
 const { defaultVoice, characterVoices } = require("./inputVoiceData");
 const {
   readStats,
@@ -44,10 +44,14 @@ async function readTranscript() {
 
     // update stats
     stats[
-      voicePool.find((v) => v.voiceCode === voiceCode).voiceType + " d"
+      Object.entries(voiceCodes)
+        .find((v) => v[1] === voiceCode)[0]
+        .split("_")[1] + " d"
     ].charCount += chunk.replace(voiceRegExp, "").length;
     stats[
-      voicePool.find((v) => v.voiceCode === voiceCode).voiceType + " m"
+      Object.entries(voiceCodes)
+        .find((v) => v[1] === voiceCode)[0]
+        .split("_")[1] + " m"
     ].charCount += chunk.replace(voiceRegExp, "").length;
   }
 
