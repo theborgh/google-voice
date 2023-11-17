@@ -28,7 +28,7 @@ async function readTranscript() {
     { voiceCode: "en-US-Neural2-D", sex: "male", voiceType: "Neural2" },
     { voiceCode: "en-IN-Neural2-B", sex: "male", voiceType: "Neural2" },
     { voiceCode: "en-US-Polyglot-1", sex: "male", voiceType: "Standard" },
-    { voiceCode: "ja-JP-Wavenet-D", sex: "male", voiceType: "Standard" },
+    { voiceCode: "ja-JP-Wavenet-D", sex: "male", voiceType: "WaveNet" },
     { voiceCode: "de-DE-Neural2-B", sex: "male", voiceType: "Neural2" },
   ];
 
