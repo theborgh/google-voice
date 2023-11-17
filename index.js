@@ -33,7 +33,7 @@ async function readTranscript() {
     }
 
     if (wouldExceedQuota(stats, voiceCode, chunk.length)) {
-      console.log("Finished processing, would exceed quota!");
+      console.log("Processing aborted, would exceed quota!");
       break;
     }
 
