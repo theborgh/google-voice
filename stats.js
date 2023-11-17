@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { freeTiers } = require("./googleVoiceData");
 
 const readStats = () => {
   const statsText = fs.readFileSync("stats.csv", "utf8");
@@ -45,4 +46,19 @@ const writeStats = (stats) => {
   fs.writeFileSync("stats.csv", statsText, "utf8");
 };
 
-module.exports = { readStats, writeStats };
+const logStats = (stats) => {
+  console.log("Stats:");
+  for (entry in stats) {
+    const budget = freeTiers.find(
+      (e) => e.voiceType === entry.split(" ")[0]
+    ).freeCharsPerMonth;
+    console.log(
+      `${entry}: ${stats[entry].charCount} (${(
+        (stats[entry].charCount * 100) /
+        budget
+      ).toFixed(2)}% of monthly free tier)`
+    );
+  }
+};
+
+module.exports = { readStats, writeStats, logStats };

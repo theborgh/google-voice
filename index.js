@@ -1,9 +1,13 @@
 const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs");
 const util = require("util");
-const { voicePool, freeTiers } = require("./googleVoiceData");
+const { voicePool } = require("./googleVoiceData");
 const { defaultVoice, characterVoices } = require("./inputVoiceData");
-const { readStats, writeStats } = require("./stats");
+const {
+  readStats,
+  writeStats: writeStatsToFile,
+  logStats: logStatsToConsole,
+} = require("./stats");
 
 async function readTranscript() {
   const inputText = fs.readFileSync("input.txt", "utf8");
@@ -55,8 +59,8 @@ async function readTranscript() {
   const endTime = new Date();
 
   // Write updated stats to file
-  console.log("Updated stats: ", stats);
-  writeStats(stats);
+  logStatsToConsole(stats);
+  writeStatsToFile(stats);
 
   console.log(
     `Audio content generated in ${
