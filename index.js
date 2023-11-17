@@ -2,11 +2,7 @@ const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs");
 const util = require("util");
 const { voiceCodes } = require("./googleVoiceData");
-const {
-  defaultVoice,
-  characterVoices,
-  configObj,
-} = require("./inputVoiceData");
+const { defaultVoice, characterVoices, configObj } = require("./config");
 const {
   readStats,
   writeStats: writeStatsToFile,
@@ -16,11 +12,11 @@ const {
 async function readTranscript() {
   const inputText = fs.readFileSync(configObj.inputFile, "utf8");
   const stats = readStats();
-
-  const chunks = inputText.split(configObj.splitRegExp);
+  const chunks = inputText.split(configObj.chunkSplitRegExp);
   const audioContent = [];
   const startTime = new Date();
   const client = new textToSpeech.TextToSpeechClient();
+  let previousVoice = null;
 
   for (const chunk of chunks) {
     let voiceCode = defaultVoice;
@@ -28,6 +24,7 @@ async function readTranscript() {
 
     for (const characterVoice of characterVoices) {
       if (chunk.match(characterVoice.regExp)) {
+        previousVoice = voiceCode;
         voiceCode = characterVoice.voiceCode;
         voiceRegExp = characterVoice.regExp;
         break;
@@ -35,10 +32,20 @@ async function readTranscript() {
     }
 
     const request = {
-      input: { text: chunk.replace(voiceRegExp, "") },
+      input: {
+        text: configObj.removeVoiceRegexpFromInput
+          ? chunk.replace(voiceRegExp, "")
+          : chunk,
+      },
       voice: {
-        languageCode: voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
-        name: voiceCode,
+        languageCode:
+          voiceCode === defaultVoice && previousVoice && configObj.stickyVoices
+            ? previousVoice.split("-")[0] + "-" + previousVoice.split("-")[1]
+            : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
+        name:
+          voiceCode === defaultVoice && previousVoice && configObj.stickyVoices
+            ? previousVoice
+            : voiceCode,
       },
       audioConfig: { audioEncoding: "MP3" },
     };

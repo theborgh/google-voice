@@ -24,7 +24,8 @@ const defaultVoice = vc.MaleGerman_Neural2;
 
 const configObj = {
   inputFile: "input.txt",
-  splitRegExp: /\r\n\r\n/,
+  chunkSplitRegExp: /\r\n\r\n/,
+  removeVoiceRegexpFromInput: true,
   stickyVoices: false,
 };
 
