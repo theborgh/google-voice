@@ -47,7 +47,7 @@ const writeStats = (stats) => {
 };
 
 const logStats = (stats) => {
-  console.log("Stats:");
+  console.log("\n\nStats:");
   for (entry in stats) {
     if (entry.toString().split(" ")[1] === "m") {
       const budget = freeTiers.find(

@@ -76,7 +76,11 @@ async function readTranscript() {
 
   // Write the binary audio content to a local file
   const writeFile = util.promisify(fs.writeFile);
-  await writeFile("output.mp3", concatenatedAudio, "binary");
+  await writeFile(
+    `${configObj.outputFile}.${configObj.outputFileFormat}`,
+    concatenatedAudio,
+    "binary"
+  );
   const endTime = new Date();
 
   // Write updated stats to file
@@ -86,7 +90,9 @@ async function readTranscript() {
   console.log(
     `Audio content generated in ${
       (endTime - startTime) / 1000
-    } seconds and written to output.mp3`
+    } seconds and written to ${configObj.outputFile}.${
+      configObj.outputFileFormat
+    }`
   );
 }
 
