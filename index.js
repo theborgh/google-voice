@@ -11,7 +11,7 @@ const {
 } = require("./stats");
 
 async function readTranscript() {
-  const inputText = fs.readFileSync(configObj.inputFile, "utf8");
+  let inputText = fs.readFileSync(configObj.inputFile, "utf8");
   const stats = readStats();
   const chunks = inputText.split(configObj.chunkSplitRegExp);
   const audioContent = [];
@@ -19,6 +19,13 @@ async function readTranscript() {
   const client = new textToSpeech.TextToSpeechClient();
   let previousVoice = null;
   let voiceCode = defaultVoice;
+
+  if (configObj.preprocessRegexp) {
+    inputText = inputText.replace(
+      configObj.preprocessRegexp,
+      configObj.preprocessReplaceString
+    );
+  }
 
   for (const chunk of chunks) {
     if (!configObj.stickyVoices) voiceCode = defaultVoice;
