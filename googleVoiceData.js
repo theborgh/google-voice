@@ -26,55 +26,45 @@ const voiceCodes = {
 const voicePool = [
   {
     voiceCode: voiceCodes.FemaleBritish_WaveNet,
-    sex: "female",
     voiceType: "WaveNet",
   },
   {
     voiceCode: voiceCodes.FemaleAussie_Standard,
-    sex: "female",
     voiceType: "Standard",
   },
   {
     voiceCode: voiceCodes.FemaleUS_WaveNet,
-    sex: "female",
     voiceType: "WaveNet",
   },
   {
     voiceCode: voiceCodes.FemaleFilipino_WaveNet,
-    sex: "female",
     voiceType: "WaveNet",
   },
   {
     voiceCode: voiceCodes.FemaleIndian_Neural2,
-    sex: "female",
     voiceType: "Neural2",
   },
-  { voiceCode: voiceCodes.MaleUS_WaveNet, sex: "male", voiceType: "WaveNet" },
-  { voiceCode: voiceCodes.MaleUS2_WaveNet, sex: "male", voiceType: "WaveNet" },
-  { voiceCode: voiceCodes.MaleUS3_Neural2, sex: "male", voiceType: "Neural2" },
+  { voiceCode: voiceCodes.MaleUS_WaveNet, voiceType: "WaveNet" },
+  { voiceCode: voiceCodes.MaleUS2_WaveNet, voiceType: "WaveNet" },
+  { voiceCode: voiceCodes.MaleUS3_Neural2, voiceType: "Neural2" },
   {
     voiceCode: voiceCodes.MaleUS4Polyglot_Standard,
-    sex: "male",
     voiceType: "Standard",
   },
   {
     voiceCode: voiceCodes.MaleIndian_Neural2,
-    sex: "male",
     voiceType: "Neural2",
   },
   {
     voiceCode: voiceCodes.MaleJapanese_WaveNet,
-    sex: "male",
     voiceType: "WaveNet",
   },
   {
     voiceCode: voiceCodes.MaleGerman_Neural2,
-    sex: "male",
     voiceType: "Neural2",
   },
   {
     voiceCode: voiceCodes.MaleItalian_Neural2,
-    sex: "male",
     voiceType: "Neural2",
   },
 ];
