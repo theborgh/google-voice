@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { freeTiers } = require("./googleVoiceData");
+const { freeTiers, voiceCodes } = require("./googleVoiceData");
 
 const readStats = () => {
   const statsText = fs.readFileSync("stats.csv", "utf8");
@@ -61,4 +61,25 @@ const logStats = (stats) => {
   }
 };
 
-module.exports = { readStats, writeStats, logStats };
+const wouldExceedQuota = (stats, voiceCode, nextChunkLength) => {
+  const voiceType = Object.entries(voiceCodes)
+    .find((v) => v[1] === voiceCode)[0]
+    .split("_")[1];
+  const statsEntry = stats[voiceType + " m"];
+  const budget = freeTiers.find(
+    (e) => e.voiceType === voiceType
+  ).freeCharsPerMonth;
+
+  console.log(
+    `${voiceType}: ${
+      statsEntry.charCount
+    } + ${nextChunkLength} of ${budget} chars (${(
+      ((statsEntry.charCount + nextChunkLength) * 100) /
+      budget
+    ).toFixed(2)}% of monthly free tier)`
+  );
+
+  return statsEntry.charCount + nextChunkLength >= budget;
+};
+
+module.exports = { readStats, writeStats, logStats, wouldExceedQuota };

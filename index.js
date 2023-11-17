@@ -7,6 +7,7 @@ const {
   readStats,
   writeStats: writeStatsToFile,
   logStats: logStatsToConsole,
+  wouldExceedQuota,
 } = require("./stats");
 
 async function readTranscript() {
@@ -29,6 +30,11 @@ async function readTranscript() {
         voiceRegExp = characterVoice.regExp;
         break;
       }
+    }
+
+    if (wouldExceedQuota(stats, voiceCode, chunk.length)) {
+      console.log("Finished processing, would exceed quota!");
+      break;
     }
 
     const request = {
