@@ -9,24 +9,32 @@ async function quickStart() {
   const text = fs.readFileSync("input.txt", "utf8");
 
   // See voices at https://cloud.google.com/text-to-speech/docs/voices
-  const suitableFemaleVoices = ["en-GB-News-H"];
-  const suitableMaleVoices = ["en-US-News-N", "en-US-Wavenet-J"];
+  const suitableFemaleVoices = [
+    "en-GB-News-H",
+    "en-AU-Standard-A",
+    "en-US-News-L",
+    "fil-PH-Wavenet-A",
+  ];
+  const suitableMaleVoices = [
+    "en-US-News-N",
+    "en-US-Wavenet-J",
+    "en-US-Neural2-D",
+    "en-US-Polyglot-1",
+  ];
   const characterVoices = [
     { separator: /^Q[\.:]/, voiceCode: "en-US-Wavenet-J" },
-    { separator: /^(A[\.:]|THE WITNESS:)/, voiceCode: "en-AU-Standard-A" },
+    { separator: /^(A[\.:]|THE WITNESS:)/, voiceCode: "en-US-Neural2-D" },
     { separator: /^THE CLERK:/, voiceCode: "en-IN-Standard-D" },
     { separator: /^THE COURT:/, voiceCode: "ja-JP-Wavenet-D" },
     { separator: /^MR. BAKER:/, voiceCode: "en-US-Wavenet-J" },
+    { separator: /^MR. P. BAKER:/, voiceCode: "en-US-Polyglot-1" },
     { separator: /^MR. PETROCELLI:/, voiceCode: "en-US-News-N" },
   ];
   const defaultVoice = "de-DE-Neural2-B";
 
-  // Separate the text into chunks based on line starts. Create an object with the charactersSeparators as keys and the chunks as values
+  // Separate the text into chunks based on line starts.
   const chunks = text.split("\r\n\r\n");
-
-  console.log(chunks);
-
-  let audioContent = [];
+  const audioContent = [];
 
   for (const chunk of chunks) {
     // Get the voice code for the chunk
@@ -52,10 +60,9 @@ async function quickStart() {
 
     const [response] = await client.synthesizeSpeech(request);
 
-    audioContent.push(response.audioContent); // Store the partial audio content
+    audioContent.push(response.audioContent);
   }
 
-  // Concatenate the partial audio content into a single Buffer
   const concatenatedAudio = Buffer.concat(audioContent);
 
   // Write the binary audio content to a local file
