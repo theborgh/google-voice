@@ -26,6 +26,8 @@ async function quickStart() {
 
   console.log(chunks);
 
+  let audioContent = [];
+
   for (const chunk of chunks) {
     // Get the voice code for the chunk
     let voiceCode = defaultVoice;
@@ -42,21 +44,25 @@ async function quickStart() {
     const request = {
       input: { text: chunk.replace(voiceSeparator, "") },
       voice: {
-        // languageCode: "en-AU",
+        languageCode: voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
         name: voiceCode,
-        // ssmlGender: "FEMALE",
       },
       audioConfig: { audioEncoding: "MP3" },
     };
 
     const [response] = await client.synthesizeSpeech(request);
 
-    // Write the binary audio content to a local file
-    const writeFile = util.promisify(fs.writeFile);
-    await writeFile("output.mp3", response.audioContent, "binary");
-
-    console.log("Audio content written to file: output.mp3", response);
+    audioContent.push(response.audioContent); // Store the partial audio content
   }
+
+  // Concatenate the partial audio content into a single Buffer
+  const concatenatedAudio = Buffer.concat(audioContent);
+
+  // Write the binary audio content to a local file
+  const writeFile = util.promisify(fs.writeFile);
+  await writeFile("output.mp3", concatenatedAudio, "binary");
+
+  console.log("Audio content written to file: output.mp3");
 }
 
 quickStart();
