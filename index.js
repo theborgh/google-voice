@@ -30,6 +30,7 @@ async function readTranscript() {
   for (const chunk of chunks) {
     if (!configObj.stickyVoices) voiceCode = defaultVoice;
     let voiceRegExp = null;
+    let textToSpeak = null;
 
     for (const characterVoice of characterVoices) {
       if (chunk.match(characterVoice.regExp)) {
@@ -40,16 +41,18 @@ async function readTranscript() {
       }
     }
 
-    if (wouldExceedQuota(stats, voiceCode, chunk.length)) {
-      console.log("Processing aborted, would exceed quota!");
+    textToSpeak = configObj.removeVoiceRegexpFromInput
+      ? chunk.replace(voiceRegExp, "")
+      : chunk;
+
+    if (wouldExceedQuota(stats, voiceCode, textToSpeak.length)) {
+      console.log("Processing aborted, would exceed free quota!");
       break;
     }
 
     const request = {
       input: {
-        text: configObj.removeVoiceRegexpFromInput
-          ? chunk.replace(voiceRegExp, "")
-          : chunk,
+        text: textToSpeak,
       },
       voice: {
         languageCode:
@@ -61,7 +64,7 @@ async function readTranscript() {
             ? previousVoice
             : voiceCode,
       },
-      audioConfig: { audioEncoding: "MP3" },
+      audioConfig: { audioEncoding: configObj.outputFileFormat.toUpperCase() },
     };
 
     const [response] = await client.synthesizeSpeech(request);
