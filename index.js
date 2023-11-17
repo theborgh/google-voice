@@ -22,11 +22,14 @@ async function readTranscript() {
     { voiceCode: "en-AU-Standard-A", sex: "female", voiceType: "Standard" },
     { voiceCode: "en-US-News-L", sex: "female", voiceType: "WaveNet" },
     { voiceCode: "fil-PH-Wavenet-A", sex: "female", voiceType: "WaveNet" },
+    { voiceCode: "en-IN-Standard-D", sex: "female", voiceType: "Standard" },
     { voiceCode: "en-US-News-N", sex: "male", voiceType: "WaveNet" },
     { voiceCode: "en-US-Wavenet-J", sex: "male", voiceType: "WaveNet" },
     { voiceCode: "en-US-Neural2-D", sex: "male", voiceType: "Neural2" },
     { voiceCode: "en-IN-Neural2-B", sex: "male", voiceType: "Neural2" },
     { voiceCode: "en-US-Polyglot-1", sex: "male", voiceType: "Standard" },
+    { voiceCode: "ja-JP-Wavenet-D", sex: "male", voiceType: "Standard" },
+    { voiceCode: "de-DE-Neural2-B", sex: "male", voiceType: "Neural2" },
   ];
 
   const characterVoices = [
