@@ -17,8 +17,15 @@ const characterVoices = [
   { regExp: /^MR. PETROCELLI:/, voiceCode: vc.MaleItalian_Neural2 },
   { regExp: /^MR. KELLY:/, voiceCode: vc.MaleUS4Polyglot_Standard },
   { regExp: /^MS. SAGER:/, voiceCode: vc.FemaleAussie_Standard },
+  { regExp: /^\(/, voiceCode: vc.MaleGerman_Neural2 },
 ];
 
 const defaultVoice = vc.MaleGerman_Neural2;
 
-module.exports = { characterVoices, defaultVoice };
+const configObj = {
+  inputFile: "input.txt",
+  splitRegExp: /\r\n\r\n/,
+  stickyVoices: false,
+};
+
+module.exports = { characterVoices, defaultVoice, configObj };

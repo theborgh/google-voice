@@ -2,7 +2,11 @@ const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs");
 const util = require("util");
 const { voiceCodes } = require("./googleVoiceData");
-const { defaultVoice, characterVoices } = require("./inputVoiceData");
+const {
+  defaultVoice,
+  characterVoices,
+  configObj,
+} = require("./inputVoiceData");
 const {
   readStats,
   writeStats: writeStatsToFile,
@@ -10,10 +14,10 @@ const {
 } = require("./stats");
 
 async function readTranscript() {
-  const inputText = fs.readFileSync("input.txt", "utf8");
+  const inputText = fs.readFileSync(configObj.inputFile, "utf8");
   const stats = readStats();
 
-  const chunks = inputText.split("\r\n\r\n");
+  const chunks = inputText.split(configObj.splitRegExp);
   const audioContent = [];
   const startTime = new Date();
   const client = new textToSpeech.TextToSpeechClient();
