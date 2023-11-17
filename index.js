@@ -18,9 +18,10 @@ async function readTranscript() {
   const startTime = new Date();
   const client = new textToSpeech.TextToSpeechClient();
   let previousVoice = null;
+  let voiceCode = defaultVoice;
 
   for (const chunk of chunks) {
-    let voiceCode = defaultVoice;
+    if (!configObj.stickyVoices) voiceCode = defaultVoice;
     let voiceRegExp = null;
 
     for (const characterVoice of characterVoices) {
