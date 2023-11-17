@@ -16,18 +16,18 @@ async function readTranscript() {
 
   for (const chunk of chunks) {
     let voiceCode = defaultVoice;
-    let voiceSeparator = null;
+    let voiceRegExp = null;
 
     for (const characterVoice of characterVoices) {
-      if (chunk.match(characterVoice.separator)) {
+      if (chunk.match(characterVoice.regExp)) {
         voiceCode = characterVoice.voiceCode;
-        voiceSeparator = characterVoice.separator;
+        voiceRegExp = characterVoice.regExp;
         break;
       }
     }
 
     const request = {
-      input: { text: chunk.replace(voiceSeparator, "") },
+      input: { text: chunk.replace(voiceRegExp, "") },
       voice: {
         languageCode: voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
         name: voiceCode,
@@ -41,10 +41,10 @@ async function readTranscript() {
     // update stats
     stats[
       voicePool.find((v) => v.voiceCode === voiceCode).voiceType + " d"
-    ].charCount += chunk.replace(voiceSeparator, "").length;
+    ].charCount += chunk.replace(voiceRegExp, "").length;
     stats[
       voicePool.find((v) => v.voiceCode === voiceCode).voiceType + " m"
-    ].charCount += chunk.replace(voiceSeparator, "").length;
+    ].charCount += chunk.replace(voiceRegExp, "").length;
   }
 
   const concatenatedAudio = Buffer.concat(audioContent);
