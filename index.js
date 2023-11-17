@@ -39,11 +39,19 @@ const readStats = () => {
   return stats;
 };
 
+const writeStats = (stats) => {
+  const statsText = Object.keys(stats)
+    .map((key) => {
+      return `${key},${stats[key].period},${stats[key].charCount}`;
+    })
+    .join("\r\n");
+
+  fs.writeFileSync("stats.csv", statsText, "utf8");
+};
+
 async function readTranscript() {
   const inputText = fs.readFileSync("input.txt", "utf8");
   const stats = readStats();
-
-  console.log(stats);
 
   const freeTiers = [
     { voiceType: "Neural2", freeCharsPerMonth: 800_000 }, // 1_000_000 bytes
@@ -77,6 +85,8 @@ async function readTranscript() {
     { separator: /^MR. BAKER:/, voiceCode: "en-US-Wavenet-J" },
     { separator: /^MR. P. BAKER:/, voiceCode: "en-US-Polyglot-1" },
     { separator: /^MR. PETROCELLI:/, voiceCode: "en-US-News-N" },
+    { separator: /^MR. KELLY:/, voiceCode: "en-US-Polyglot-1" },
+    { separator: /^MS. SAGER:/, voiceCode: "en-AU-Standard-A" },
   ];
   const defaultVoice = "de-DE-Neural2-B";
 
@@ -84,44 +94,55 @@ async function readTranscript() {
   const audioContent = [];
   const startTime = new Date();
 
-  // for (const chunk of chunks) {
-  //   // Get the voice code for the chunk
-  //   let voiceCode = defaultVoice;
-  //   let voiceSeparator = null;
+  for (const chunk of chunks) {
+    let voiceCode = defaultVoice;
+    let voiceSeparator = null;
 
-  //   for (const characterVoice of characterVoices) {
-  //     if (chunk.match(characterVoice.separator)) {
-  //       voiceCode = characterVoice.voiceCode;
-  //       voiceSeparator = characterVoice.separator;
-  //       break;
-  //     }
-  //   }
+    for (const characterVoice of characterVoices) {
+      if (chunk.match(characterVoice.separator)) {
+        voiceCode = characterVoice.voiceCode;
+        voiceSeparator = characterVoice.separator;
+        break;
+      }
+    }
 
-  //   const request = {
-  //     input: { text: chunk.replace(voiceSeparator, "") },
-  //     voice: {
-  //       languageCode: voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
-  //       name: voiceCode,
-  //     },
-  //     audioConfig: { audioEncoding: "MP3" },
-  //   };
+    const request = {
+      input: { text: chunk.replace(voiceSeparator, "") },
+      voice: {
+        languageCode: voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
+        name: voiceCode,
+      },
+      audioConfig: { audioEncoding: "MP3" },
+    };
 
-  //   const [response] = await client.synthesizeSpeech(request);
-  //   audioContent.push(response.audioContent);
-  // }
+    const [response] = await client.synthesizeSpeech(request);
+    audioContent.push(response.audioContent);
 
-  // const concatenatedAudio = Buffer.concat(audioContent);
+    // update stats
+    stats[
+      voicePool.find((v) => v.voiceCode === voiceCode).voiceType + " d"
+    ].charCount += chunk.replace(voiceSeparator, "").length;
+    stats[
+      voicePool.find((v) => v.voiceCode === voiceCode).voiceType + " m"
+    ].charCount += chunk.replace(voiceSeparator, "").length;
+  }
 
-  // // Write the binary audio content to a local file
-  // const writeFile = util.promisify(fs.writeFile);
-  // await writeFile("output.mp3", concatenatedAudio, "binary");
-  // const endTime = new Date();
+  const concatenatedAudio = Buffer.concat(audioContent);
 
-  // console.log(
-  //   `Audio content generated in ${
-  //     (endTime - startTime) / 1000
-  //   } seconds and written to output.mp3`
-  // );
+  // Write the binary audio content to a local file
+  const writeFile = util.promisify(fs.writeFile);
+  await writeFile("output.mp3", concatenatedAudio, "binary");
+  const endTime = new Date();
+
+  // Write updated stats to file
+  console.log("Updated stats: ", stats);
+  writeStats(stats);
+
+  console.log(
+    `Audio content generated in ${
+      (endTime - startTime) / 1000
+    } seconds and written to output.mp3`
+  );
 }
 
 readTranscript();
