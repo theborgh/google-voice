@@ -44,7 +44,7 @@ const writeStats = (stats) => {
   fs.writeFileSync("stats.csv", statsText, "utf8");
 };
 
-const logStats = (stats, initialStats) => {
+const logStats = (stats, initialStats, startTime, endTime, configObj) => {
   console.log("\n\nStats:");
   for (entry in stats) {
     if (entry.toString().split(" ")[1] === "m") {
@@ -62,6 +62,14 @@ const logStats = (stats, initialStats) => {
       );
     }
   }
+
+  console.log(
+    `Audio content generated in ${
+      (endTime - startTime) / 1000
+    } seconds and written to ${configObj.outputFile}.${
+      configObj.outputFileFormat
+    }`
+  );
 };
 
 const wouldExceedQuota = (stats, voiceCode, nextChunkLength) => {

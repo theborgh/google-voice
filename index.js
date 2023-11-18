@@ -103,17 +103,8 @@ async function readTranscript() {
   );
   const endTime = new Date();
 
-  // Write updated stats to file
-  logStatsToConsole(stats, initialStats);
+  logStatsToConsole(stats, initialStats, startTime, endTime, configObj);
   writeStatsToFile(stats);
-
-  console.log(
-    `Audio content generated in ${
-      (endTime - startTime) / 1000
-    } seconds and written to ${configObj.outputFile}.${
-      configObj.outputFileFormat
-    }`
-  );
 }
 
 try {
