@@ -19,8 +19,6 @@ const readStats = () => {
       stats[entry].period !== today.toISOString().slice(0, 10)
     ) {
       stats[entry].period = today.toISOString().slice(0, 10);
-      stats[[entry].toString().split(" ")[0] + " m"].charCount +=
-        stats[entry].charCount;
       stats[entry].charCount = 0;
     }
 
