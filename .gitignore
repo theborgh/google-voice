@@ -1,5 +1,6 @@
 node_modules
 input.txt
+input-main.txt
 output.mp3
 stats.csv
 TODO.md

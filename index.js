@@ -9,6 +9,7 @@ const {
   logStats: logStatsToConsole,
   wouldExceedQuota,
 } = require("./stats");
+const { checkForInvalidVoices } = require("./validation");
 
 async function readTranscript() {
   let inputText = fs.readFileSync(configObj.inputFile, "utf8");
@@ -25,6 +26,13 @@ async function readTranscript() {
     inputText = inputText.replace(
       configObj.preprocessRegexp,
       configObj.preprocessReplaceString
+    );
+  }
+
+  const invalidCodeIndex = checkForInvalidVoices(characterVoices);
+  if (invalidCodeIndex !== -1) {
+    throw new Error(
+      `Invalid voice code found in characterVoices array for regExp ${characterVoices[invalidCodeIndex].regExp}: ${characterVoices[invalidCodeIndex].voiceCode}`
     );
   }
 
@@ -108,4 +116,8 @@ async function readTranscript() {
   );
 }
 
-readTranscript();
+try {
+  readTranscript();
+} catch (err) {
+  console.error("Error validating character voices: ", err);
+}
