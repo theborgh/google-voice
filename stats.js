@@ -44,7 +44,9 @@ const writeStats = (stats) => {
   fs.writeFileSync("stats.csv", statsText, "utf8");
 };
 
-const logStats = (stats, initialStats, startTime, endTime, configObj) => {
+const logStats = (stats, initialStats, startTime, configObj) => {
+  const endTime = new Date();
+
   console.log("\n\nStats:");
   for (entry in stats) {
     if (entry.toString().split(" ")[1] === "m") {
