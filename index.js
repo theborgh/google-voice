@@ -13,6 +13,7 @@ const {
 async function readTranscript() {
   let inputText = fs.readFileSync(configObj.inputFile, "utf8");
   const stats = readStats();
+  const initialStats = JSON.parse(JSON.stringify(stats));
   const chunks = inputText.split(configObj.chunkSplitRegExp);
   const audioContent = [];
   const startTime = new Date();
@@ -95,7 +96,7 @@ async function readTranscript() {
   const endTime = new Date();
 
   // Write updated stats to file
-  logStatsToConsole(stats);
+  logStatsToConsole(stats, initialStats);
   writeStatsToFile(stats);
 
   console.log(

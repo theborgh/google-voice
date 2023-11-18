@@ -46,7 +46,7 @@ const writeStats = (stats) => {
   fs.writeFileSync("stats.csv", statsText, "utf8");
 };
 
-const logStats = (stats) => {
+const logStats = (stats, initialStats) => {
   console.log("\n\nStats:");
   for (entry in stats) {
     if (entry.toString().split(" ")[1] === "m") {
@@ -57,7 +57,10 @@ const logStats = (stats) => {
         `${entry}: ${stats[entry].charCount} (${(
           (stats[entry].charCount * 100) /
           budget
-        ).toFixed(2)}% of monthly free tier)`
+        ).toFixed(2)}% of monthly free tier, ${(
+          ((stats[entry].charCount - initialStats[entry].charCount) * 100) /
+          budget
+        ).toFixed(2)}% just used)`
       );
     }
   }
