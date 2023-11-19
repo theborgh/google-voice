@@ -57,10 +57,12 @@ const logStatsToConsole = (stats, initialStats, startTime, configObj) => {
         `${entry}: ${stats[entry].charCount} (${(
           (stats[entry].charCount * 100) /
           budget
-        ).toFixed(2)}% of monthly free tier, ${(
+        ).toFixed(2)}% of monthly free tier used so far, ${
+          stats[entry].charCount - initialStats[entry].charCount
+        } chars or ${(
           ((stats[entry].charCount - initialStats[entry].charCount) * 100) /
           budget
-        ).toFixed(2)}% just used)`
+        ).toFixed(2)}% of budget just used)`
       );
     }
   }
