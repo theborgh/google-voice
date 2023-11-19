@@ -61,7 +61,6 @@ async function readTranscript() {
     }
 
     try {
-      console.log(textToSpeak);
       const response = await configObj.synthesizer.synthesize(
         configObj.synthesizer.createRequestObject(
           textToSpeak,
