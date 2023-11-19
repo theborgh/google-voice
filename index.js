@@ -37,9 +37,6 @@ async function readTranscript() {
   for (const chunk of chunks) {
     if (!configObj.stickyVoices) voiceCode = defaultVoice;
     let voiceRegExp = null;
-    const textToSpeak = configObj.removeVoiceRegexpFromInput
-      ? chunk.replace(voiceRegExp, "")
-      : chunk;
 
     for (const characterVoice of characterVoices) {
       if (chunk.match(characterVoice.regExp)) {
@@ -49,6 +46,10 @@ async function readTranscript() {
         break;
       }
     }
+
+    const textToSpeak = configObj.removeVoiceRegexpFromInput
+      ? chunk.replace(voiceRegExp, "")
+      : chunk;
 
     voiceCodeToUse =
       voiceCode === defaultVoice && previousVoiceCode && configObj.stickyVoices
@@ -60,6 +61,7 @@ async function readTranscript() {
     }
 
     try {
+      console.log(textToSpeak);
       const response = await configObj.synthesizer.synthesize(
         configObj.synthesizer.createRequestObject(
           textToSpeak,
