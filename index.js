@@ -1,6 +1,4 @@
-const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs");
-const util = require("util");
 const { defaultVoice, characterVoices, configObj } = require("./config");
 const {
   readStats,
@@ -17,7 +15,6 @@ async function readTranscript() {
   const initialStats = JSON.parse(JSON.stringify(stats));
   const chunks = inputText.split(configObj.chunkSplitRegExp);
   const audioContent = [];
-  const client = new textToSpeech.TextToSpeechClient();
   const startTime = new Date();
   const invalidVoiceIndex = checkForInvalidVoices(characterVoices);
   let previousVoiceCode = null;
@@ -62,30 +59,21 @@ async function readTranscript() {
       throw new Error("Processing aborted, would exceed free quota!");
     }
 
-    const request = {
-      input: {
-        text: textToSpeak,
-      },
-      voice: {
-        languageCode:
-          voiceCode === defaultVoice &&
-          previousVoiceCode &&
-          configObj.stickyVoices
-            ? previousVoiceCode.split("-")[0] +
-              "-" +
-              previousVoiceCode.split("-")[1]
-            : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
-        name: voiceCodeToUse,
-      },
-      audioConfig: { audioEncoding: configObj.outputFileFormat.toUpperCase() },
-    };
+    const request = configObj.createRequest(
+      textToSpeak,
+      voiceCode,
+      defaultVoice,
+      previousVoiceCode,
+      configObj,
+      voiceCodeToUse
+    );
 
     try {
-      const [response] = await client.synthesizeSpeech(request);
+      const [response] = await configObj.synthesize(request);
       audioContent.push(response.audioContent);
     } catch (err) {
       throw new Error(
-        `Error while processing chunk ${chunk} with voice ${voiceCodeToUse}: ${err}`
+        `Error while processing chunk ${chunk} with voice ${voiceCodeToUse}: ${err.message}`
       );
     }
 
@@ -94,9 +82,7 @@ async function readTranscript() {
     stats[getVoiceType(voiceCode) + " m"].charCount += textToSpeak.length;
   }
 
-  // Write the binary audio content to local file
-  const writeFile = util.promisify(fs.writeFile);
-  await writeFile(
+  fs.writeFileSync(
     `${configObj.outputFile}.${configObj.outputFileFormat}`,
     Buffer.concat(audioContent),
     "binary"

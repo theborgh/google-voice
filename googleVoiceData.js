@@ -92,4 +92,30 @@ const voiceCodes = {
   MaleUSSpanishPolyglot_WaveNet: "es-US-Polyglot-1",
 };
 
-module.exports = { freeTiers, voiceCodes };
+const textToSpeech = require("@google-cloud/text-to-speech");
+const { synthesizeSpeech: synthesize } = new textToSpeech.TextToSpeechClient();
+
+const createRequest = (
+  textToSpeak,
+  voiceCode,
+  defaultVoice,
+  previousVoiceCode,
+  configObj,
+  voiceCodeToUse
+) => ({
+  input: {
+    text: textToSpeak,
+  },
+  voice: {
+    languageCode:
+      voiceCode === defaultVoice && previousVoiceCode && configObj.stickyVoices
+        ? previousVoiceCode.split("-")[0] +
+          "-" +
+          previousVoiceCode.split("-")[1]
+        : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
+    name: voiceCodeToUse,
+  },
+  audioConfig: { audioEncoding: configObj.outputFileFormat },
+});
+
+module.exports = { freeTiers, voiceCodes, synthesize, createRequest };
