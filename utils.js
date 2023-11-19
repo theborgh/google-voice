@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { voiceCodes } = require("./googleVoiceData");
 
 const getVoiceType = (voiceCode) =>
