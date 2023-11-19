@@ -36,12 +36,14 @@ async function readTranscript() {
   }
 
   for (const chunk of chunks) {
+    let voiceFound = false;
     if (!configObj.stickyVoices) voiceCode = configObj.defaultVoice;
     let voiceRegExp = null;
     let keepText = null;
 
     for (const characterVoice of characterVoices) {
       if (chunk.match(characterVoice.regExp)) {
+        voiceFound = true;
         previousVoiceCode = voiceCode;
         voiceCode = characterVoice.voiceCode;
         voiceRegExp = characterVoice.regExp;
@@ -56,9 +58,7 @@ async function readTranscript() {
         : chunk;
 
     voiceCodeToUse =
-      voiceCode === configObj.defaultVoice &&
-      previousVoiceCode &&
-      configObj.stickyVoices
+      !voiceFound && configObj.stickyVoices && previousVoiceCode
         ? previousVoiceCode
         : voiceCode;
 
