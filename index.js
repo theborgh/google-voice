@@ -59,18 +59,20 @@ async function readTranscript() {
       throw new Error("Processing aborted, would exceed free quota!");
     }
 
-    const request = configObj.createRequest(
-      textToSpeak,
-      voiceCode,
-      defaultVoice,
-      previousVoiceCode,
-      configObj,
-      voiceCodeToUse
-    );
-
     try {
-      const [response] = await configObj.synthesize(request);
-      audioContent.push(response.audioContent);
+      const response = await configObj.synthesizer.synthesize(
+        configObj.synthesizer.createRequest(
+          textToSpeak,
+          voiceCode,
+          defaultVoice,
+          previousVoiceCode,
+          configObj,
+          voiceCodeToUse
+        )
+      );
+      audioContent.push(
+        configObj.synthesizer.mapResponseToAudioContent(response)
+      );
     } catch (err) {
       throw new Error(
         `Error while processing chunk ${chunk} with voice ${voiceCodeToUse}: ${err.message}`

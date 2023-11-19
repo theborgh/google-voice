@@ -93,7 +93,7 @@ const voiceCodes = {
 };
 
 const textToSpeech = require("@google-cloud/text-to-speech");
-const { synthesizeSpeech: synthesize } = new textToSpeech.TextToSpeechClient();
+const client = new textToSpeech.TextToSpeechClient();
 
 const createRequest = (
   textToSpeak,
@@ -118,4 +118,19 @@ const createRequest = (
   audioConfig: { audioEncoding: configObj.outputFileFormat },
 });
 
-module.exports = { freeTiers, voiceCodes, synthesize, createRequest };
+const synthesize = async (...args) => {
+  const [response] = await client.synthesizeSpeech(...args);
+  return response;
+};
+
+const mapResponseToAudioContent = (response) => response.audioContent;
+
+module.exports = {
+  freeTiers,
+  voiceCodes,
+  synthesizer: {
+    synthesize,
+    createRequest,
+    mapResponseToAudioContent,
+  },
+};
