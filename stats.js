@@ -34,7 +34,7 @@ const readStats = () => {
   return stats;
 };
 
-const writeStats = (stats) => {
+const writeStatsToFile = (stats) => {
   const statsText = Object.keys(stats)
     .map((key) => {
       return `${key},${stats[key].period},${stats[key].charCount}`;
@@ -44,7 +44,7 @@ const writeStats = (stats) => {
   fs.writeFileSync("stats.csv", statsText, "utf8");
 };
 
-const logStats = (stats, initialStats, startTime, configObj) => {
+const logStatsToConsole = (stats, initialStats, startTime, configObj) => {
   const endTime = new Date();
 
   console.log("\n\nStats:");
@@ -95,4 +95,9 @@ const wouldExceedQuota = (stats, voiceCode, nextChunkLength) => {
   return statsEntry.charCount + nextChunkLength >= budget;
 };
 
-module.exports = { readStats, writeStats, logStats, wouldExceedQuota };
+module.exports = {
+  readStats,
+  writeStatsToFile,
+  logStatsToConsole,
+  wouldExceedQuota,
+};

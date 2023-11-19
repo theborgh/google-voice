@@ -4,8 +4,8 @@ const util = require("util");
 const { defaultVoice, characterVoices, configObj } = require("./config");
 const {
   readStats,
-  writeStats: writeStatsToFile,
-  logStats: logStatsToConsole,
+  writeStatsToFile,
+  logStatsToConsole,
   wouldExceedQuota,
 } = require("./stats");
 const { checkForInvalidVoices } = require("./validation");
