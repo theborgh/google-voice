@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { defaultVoice, characterVoices, configObj } = require("./config");
+const configObj = require("./config");
 const {
   readStats,
   writeStatsToFile,
@@ -12,13 +12,14 @@ const { getVoiceType, writeOutputToFile } = require("./utils");
 async function readTranscript() {
   let inputText = fs.readFileSync(configObj.inputFile, "utf8");
   const stats = readStats();
+  const { characterVoices } = configObj;
   const initialStats = JSON.parse(JSON.stringify(stats));
   const chunks = inputText.split(configObj.chunkSplitRegExp);
   const audioContent = [];
   const startTime = new Date();
   const invalidVoiceIndex = checkForInvalidVoices(characterVoices);
   let previousVoiceCode = null;
-  let voiceCode = defaultVoice;
+  let voiceCode = configObj.defaultVoice;
   let voiceCodeToUse = null;
 
   if (invalidVoiceIndex !== -1) {
@@ -35,24 +36,29 @@ async function readTranscript() {
   }
 
   for (const chunk of chunks) {
-    if (!configObj.stickyVoices) voiceCode = defaultVoice;
+    if (!configObj.stickyVoices) voiceCode = configObj.defaultVoice;
     let voiceRegExp = null;
+    let keepText = null;
 
     for (const characterVoice of characterVoices) {
       if (chunk.match(characterVoice.regExp)) {
         previousVoiceCode = voiceCode;
         voiceCode = characterVoice.voiceCode;
         voiceRegExp = characterVoice.regExp;
+        keepText = characterVoice.keepText;
         break;
       }
     }
 
-    const textToSpeak = configObj.removeVoiceRegexpFromInput
-      ? chunk.replace(voiceRegExp, "")
-      : chunk;
+    const textToSpeak =
+      configObj.removeVoiceRegexpFromInput && !keepText
+        ? chunk.replace(voiceRegExp, "")
+        : chunk;
 
     voiceCodeToUse =
-      voiceCode === defaultVoice && previousVoiceCode && configObj.stickyVoices
+      voiceCode === configObj.defaultVoice &&
+      previousVoiceCode &&
+      configObj.stickyVoices
         ? previousVoiceCode
         : voiceCode;
 
@@ -65,7 +71,6 @@ async function readTranscript() {
         configObj.synthesizer.createRequestObject(
           textToSpeak,
           voiceCode,
-          defaultVoice,
           previousVoiceCode,
           configObj,
           voiceCodeToUse

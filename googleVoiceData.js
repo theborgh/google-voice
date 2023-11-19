@@ -98,7 +98,6 @@ const client = new textToSpeech.TextToSpeechClient();
 const createRequestObject = (
   textToSpeak,
   voiceCode,
-  defaultVoice,
   previousVoiceCode,
   configObj,
   voiceCodeToUse
@@ -108,7 +107,9 @@ const createRequestObject = (
   },
   voice: {
     languageCode:
-      voiceCode === defaultVoice && previousVoiceCode && configObj.stickyVoices
+      voiceCode === configObj.defaultVoice &&
+      previousVoiceCode &&
+      configObj.stickyVoices
         ? previousVoiceCode.split("-")[0] +
           "-" +
           previousVoiceCode.split("-")[1]
