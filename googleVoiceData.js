@@ -95,7 +95,7 @@ const voiceCodes = {
 const textToSpeech = require("@google-cloud/text-to-speech");
 const client = new textToSpeech.TextToSpeechClient();
 
-const createRequest = (
+const createRequestObject = (
   textToSpeak,
   voiceCode,
   defaultVoice,
@@ -130,7 +130,7 @@ module.exports = {
   voiceCodes,
   synthesizer: {
     synthesize,
-    createRequest,
+    createRequestObject,
     mapResponseToAudioContent,
   },
 };

@@ -61,7 +61,7 @@ async function readTranscript() {
 
     try {
       const response = await configObj.synthesizer.synthesize(
-        configObj.synthesizer.createRequest(
+        configObj.synthesizer.createRequestObject(
           textToSpeak,
           voiceCode,
           defaultVoice,
