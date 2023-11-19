@@ -1,7 +1,6 @@
 const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs");
 const util = require("util");
-const { voiceCodes } = require("./googleVoiceData");
 const { defaultVoice, characterVoices, configObj } = require("./config");
 const {
   readStats,
@@ -10,6 +9,7 @@ const {
   wouldExceedQuota,
 } = require("./stats");
 const { checkForInvalidVoices } = require("./validation");
+const { getVoiceType } = require("./utils");
 
 async function readTranscript() {
   let inputText = fs.readFileSync(configObj.inputFile, "utf8");
@@ -20,8 +20,9 @@ async function readTranscript() {
   const client = new textToSpeech.TextToSpeechClient();
   const startTime = new Date();
   const invalidVoiceIndex = checkForInvalidVoices(characterVoices);
-  let previousVoice = null;
+  let previousVoiceCode = null;
   let voiceCode = defaultVoice;
+  let voiceCodeToUse = null;
 
   if (invalidVoiceIndex !== -1) {
     throw new Error(
@@ -45,14 +46,19 @@ async function readTranscript() {
 
     for (const characterVoice of characterVoices) {
       if (chunk.match(characterVoice.regExp)) {
-        previousVoice = voiceCode;
+        previousVoiceCode = voiceCode;
         voiceCode = characterVoice.voiceCode;
         voiceRegExp = characterVoice.regExp;
         break;
       }
     }
 
-    if (wouldExceedQuota(stats, voiceCode, textToSpeak.length)) {
+    voiceCodeToUse =
+      voiceCode === defaultVoice && previousVoiceCode && configObj.stickyVoices
+        ? previousVoiceCode
+        : voiceCode;
+
+    if (wouldExceedQuota(stats, voiceCodeToUse, textToSpeak.length)) {
       throw new Error("Processing aborted, would exceed free quota!");
     }
 
@@ -62,31 +68,30 @@ async function readTranscript() {
       },
       voice: {
         languageCode:
-          voiceCode === defaultVoice && previousVoice && configObj.stickyVoices
-            ? previousVoice.split("-")[0] + "-" + previousVoice.split("-")[1]
+          voiceCode === defaultVoice &&
+          previousVoiceCode &&
+          configObj.stickyVoices
+            ? previousVoiceCode.split("-")[0] +
+              "-" +
+              previousVoiceCode.split("-")[1]
             : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
-        name:
-          voiceCode === defaultVoice && previousVoice && configObj.stickyVoices
-            ? previousVoice
-            : voiceCode,
+        name: voiceCodeToUse,
       },
       audioConfig: { audioEncoding: configObj.outputFileFormat.toUpperCase() },
     };
 
-    const [response] = await client.synthesizeSpeech(request);
-    audioContent.push(response.audioContent);
+    try {
+      const [response] = await client.synthesizeSpeech(request);
+      audioContent.push(response.audioContent);
+    } catch (err) {
+      throw new Error(
+        `Error while processing chunk ${chunk} with voice ${voiceCodeToUse}: ${err}`
+      );
+    }
 
-    // update stats
-    stats[
-      Object.entries(voiceCodes)
-        .find((v) => v[1] === voiceCode)[0]
-        .split("_")[1] + " d"
-    ].charCount += chunk.replace(voiceRegExp, "").length;
-    stats[
-      Object.entries(voiceCodes)
-        .find((v) => v[1] === voiceCode)[0]
-        .split("_")[1] + " m"
-    ].charCount += chunk.replace(voiceRegExp, "").length;
+    // Update stats
+    stats[getVoiceType(voiceCode) + " d"].charCount += textToSpeak.length;
+    stats[getVoiceType(voiceCode) + " m"].charCount += textToSpeak.length;
   }
 
   // Write the binary audio content to local file
