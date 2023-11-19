@@ -7,7 +7,7 @@ const {
   wouldExceedQuota,
 } = require("./stats");
 const { checkForInvalidVoices } = require("./validation");
-const { getVoiceType } = require("./utils");
+const { getVoiceType, writeOutputToFile } = require("./utils");
 
 async function readTranscript() {
   let inputText = fs.readFileSync(configObj.inputFile, "utf8");
@@ -84,12 +84,7 @@ async function readTranscript() {
     stats[getVoiceType(voiceCode) + " m"].charCount += textToSpeak.length;
   }
 
-  fs.writeFileSync(
-    `${configObj.outputFile}.${configObj.outputFileFormat}`,
-    Buffer.concat(audioContent),
-    "binary"
-  );
-
+  writeOutputToFile(audioContent, configObj);
   logStatsToConsole(stats, initialStats, startTime, configObj);
   writeStatsToFile(stats);
 }

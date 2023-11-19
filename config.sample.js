@@ -1,29 +1,32 @@
-const { voiceCodes: vc } = require("./googleVoiceData.js");
+const { synthesizer, voiceCodes: vc } = require("./googleVoiceData.js");
 
 const characterVoices = [
-  { regExp: /^Q[\.:]/, voiceCode: vc.MaleNorwegian_WaveNet },
+  { regExp: /^Q[\.:]/, voiceCode: vc.MaleUS4_Standard },
   {
     regExp: /^(A[\.:]|THE WITNESS:)/,
-    voiceCode: vc.MaleUSSpanishPolyglot_Standard,
+    voiceCode: vc.MaleUS3_Standard,
   },
-  { regExp: /^THE CLERK:/, voiceCode: vc.FemaleIndian_Neural2 },
+  { regExp: /^THE CLERK:/, voiceCode: vc.FemaleIndian_WaveNet },
   { regExp: /^THE COURT:/, voiceCode: vc.MaleJapanese_WaveNet },
   { regExp: /^MR. BAKER:/, voiceCode: vc.MaleUS2_WaveNet },
   {
     regExp: /^MR. P. BAKER:/,
-    voiceCode: vc.MaleUS4Polyglot_Standard,
+    voiceCode: vc.MaleUS4Polyglot_WaveNet,
   },
   { regExp: /^MR. BLASIER:/, voiceCode: vc.MaleUS_WaveNet },
-  { regExp: /^MR. PETROCELLI:/, voiceCode: vc.MaleItalian_Neural2 },
-  { regExp: /^MS. MEDVENE:/, voiceCode: vc.MaleNorwegian_WaveNet },
-  { regExp: /^MR. KELLY:/, voiceCode: vc.MaleUS4Polyglot_Standard },
-  { regExp: /^MS. SAGER:/, voiceCode: vc.FemaleAussie_Standard },
-  { regExp: /^\(/, voiceCode: vc.MaleGerman_Neural2 },
+  { regExp: /^MR. PETROCELLI:/, voiceCode: vc.MaleItalian_WaveNet },
+  { regExp: /^MR. BREWER:/, voiceCode: vc.MaleAussie2_WaveNet },
+  { regExp: /^MR. MEDVENE:/, voiceCode: vc.MaleUS4_Standard },
+  { regExp: /^MR. KELLY:/, voiceCode: vc.MaleUS4Polyglot_WaveNet },
+  { regExp: /^MS. SAGER:/, voiceCode: vc.FemaleAussie_WaveNet },
+  { regExp: /^JURORS:/, voiceCode: vc.MaleUS3_WaveNet },
+  { regExp: /^\(/, voiceCode: vc.MaleGerman_WaveNet },
 ];
 
-const defaultVoice = vc.MaleGerman_Neural2;
+const defaultVoice = vc.MaleGerman_WaveNet;
 
 const configObj = {
+  synthesizer,
   inputFile: "input.txt",
   outputFile: "output",
   outputFileFormat: "mp3",
