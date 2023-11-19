@@ -115,7 +115,7 @@ const createRequestObject = (
         : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
     name: voiceCodeToUse,
   },
-  audioConfig: { audioEncoding: configObj.outputFileFormat },
+  audioConfig: { audioEncoding: configObj.outputFileFormat.toUpperCase() },
 });
 
 const synthesize = async (...args) => {
