@@ -73,7 +73,8 @@ async function readTranscript() {
           voiceCode,
           previousVoiceCode,
           configObj,
-          voiceCodeToUse
+          voiceCodeToUse,
+          voiceFound
         )
       );
       audioContent.push(

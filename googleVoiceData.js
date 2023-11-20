@@ -100,16 +100,15 @@ const createRequestObject = (
   voiceCode,
   previousVoiceCode,
   configObj,
-  voiceCodeToUse
+  voiceCodeToUse,
+  voiceFound
 ) => ({
   input: {
     text: textToSpeak,
   },
   voice: {
     languageCode:
-      voiceCode === configObj.defaultVoice &&
-      previousVoiceCode &&
-      configObj.stickyVoices
+      !voiceFound && configObj.stickyVoices && previousVoiceCode
         ? previousVoiceCode.split("-")[0] +
           "-" +
           previousVoiceCode.split("-")[1]
