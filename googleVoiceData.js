@@ -1,3 +1,6 @@
+const textToSpeech = require("@google-cloud/text-to-speech");
+const client = new textToSpeech.TextToSpeechClient();
+
 // See https://cloud.google.com/text-to-speech/pricing
 const freeTiers = [
   { voiceType: "Neural2", freeCharsPerMonth: 800_000 }, // 1_000_000 bytes
@@ -92,30 +95,20 @@ const voiceCodes = {
   MaleUSSpanishPolyglot_WaveNet: "es-US-Polyglot-1",
 };
 
-const textToSpeech = require("@google-cloud/text-to-speech");
-const client = new textToSpeech.TextToSpeechClient();
-
 const createRequestObject = (
   textToSpeak,
-  voiceCode,
-  previousVoiceCode,
-  configObj,
+  languageCode,
   voiceCodeToUse,
-  voiceFound
+  outputFileFormat
 ) => ({
   input: {
     text: textToSpeak,
   },
   voice: {
-    languageCode:
-      !voiceFound && configObj.stickyVoices && previousVoiceCode
-        ? previousVoiceCode.split("-")[0] +
-          "-" +
-          previousVoiceCode.split("-")[1]
-        : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1],
+    languageCode,
     name: voiceCodeToUse,
   },
-  audioConfig: { audioEncoding: configObj.outputFileFormat.toUpperCase() },
+  audioConfig: { audioEncoding: outputFileFormat },
 });
 
 const synthesize = async (...args) => {

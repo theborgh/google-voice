@@ -66,15 +66,20 @@ async function readTranscript() {
       throw new Error("Processing aborted, would exceed free quota!");
     }
 
+    const languageCode =
+      !voiceFound && configObj.stickyVoices && previousVoiceCode
+        ? previousVoiceCode.split("-")[0] +
+          "-" +
+          previousVoiceCode.split("-")[1]
+        : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1];
+
     try {
       const response = await configObj.synthesizer.synthesize(
         configObj.synthesizer.createRequestObject(
           textToSpeak,
-          voiceCode,
-          previousVoiceCode,
-          configObj,
+          languageCode,
           voiceCodeToUse,
-          voiceFound
+          configObj.outputFileFormat.toUpperCase()
         )
       );
       audioContent.push(
@@ -87,8 +92,8 @@ async function readTranscript() {
     }
 
     // Update stats
-    stats[getVoiceType(voiceCode) + " d"].charCount += textToSpeak.length;
-    stats[getVoiceType(voiceCode) + " m"].charCount += textToSpeak.length;
+    stats[getVoiceType(voiceCodeToUse) + " d"].charCount += textToSpeak.length;
+    stats[getVoiceType(voiceCodeToUse) + " m"].charCount += textToSpeak.length;
   }
 
   writeOutputToFile(audioContent, configObj);
