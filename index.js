@@ -18,9 +18,6 @@ async function readTranscript() {
   const audioContent = [];
   const startTime = new Date();
   const invalidVoiceIndex = checkForInvalidVoices(characterVoices);
-  let previousVoiceCode = null;
-  let voiceCode = configObj.defaultVoice;
-  let voiceCodeToUse = null;
 
   if (invalidVoiceIndex !== -1) {
     throw new Error(
@@ -35,32 +32,43 @@ async function readTranscript() {
     );
   }
 
+  let voiceCode = (previousVoiceCode = configObj.defaultVoice);
+
   for (const chunk of chunks) {
     let voiceFound = false;
-    if (!configObj.stickyVoices) voiceCode = configObj.defaultVoice;
     let voiceRegExp = null;
-    let keepText = null;
+    let voiceCodeToUse = null;
+
+    previousVoiceCode = voiceCode;
+    voiceCode = null;
+
+    if (!configObj.stickyVoices) voiceCode = configObj.defaultVoice;
 
     for (const characterVoice of characterVoices) {
       if (chunk.match(characterVoice.regExp)) {
         voiceFound = true;
-        previousVoiceCode = voiceCode;
         voiceCode = characterVoice.voiceCode;
         voiceRegExp = characterVoice.regExp;
-        keepText = characterVoice.keepText;
         break;
       }
     }
 
-    const textToSpeak =
-      configObj.removeVoiceRegexpFromInput && !keepText
-        ? chunk.replace(voiceRegExp, "")
-        : chunk;
+    if (!voiceFound) {
+      voiceCode = configObj.defaultVoice;
+    }
 
     voiceCodeToUse =
       !voiceFound && configObj.stickyVoices && previousVoiceCode
         ? previousVoiceCode
         : voiceCode;
+
+    console.log(
+      `chunk: ${chunk}, voiceFound: ${voiceFound}, previousVoiceCode: ${previousVoiceCode}, voiceCode: ${voiceCode}, voiceCodeToUse: ${voiceCodeToUse}`
+    );
+
+    const textToSpeak = configObj.removeVoiceRegexpFromInput
+      ? chunk.replace(voiceRegExp, "")
+      : chunk;
 
     if (wouldExceedQuota(stats, voiceCodeToUse, textToSpeak.length)) {
       throw new Error("Processing aborted, would exceed free quota!");
