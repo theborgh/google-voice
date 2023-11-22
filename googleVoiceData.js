@@ -97,7 +97,6 @@ const voiceCodes = {
 
 const createRequestObject = (
   textToSpeak,
-  languageCode,
   voiceCodeToUse,
   outputFileFormat
 ) => ({
@@ -105,7 +104,8 @@ const createRequestObject = (
     text: textToSpeak,
   },
   voice: {
-    languageCode,
+    languageCode:
+      voiceCodeToUse.split("-")[0] + "-" + voiceCodeToUse.split("-")[1],
     name: voiceCodeToUse,
   },
   audioConfig: { audioEncoding: outputFileFormat },

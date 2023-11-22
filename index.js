@@ -18,6 +18,7 @@ async function readTranscript() {
   const audioContent = [];
   const startTime = new Date();
   const invalidVoiceIndex = checkForInvalidVoices(characterVoices);
+  let voiceCode = (previousVoiceCode = configObj.defaultVoice);
 
   if (invalidVoiceIndex !== -1) {
     throw new Error(
@@ -32,16 +33,12 @@ async function readTranscript() {
     );
   }
 
-  let voiceCode = (previousVoiceCode = configObj.defaultVoice);
-
   for (const chunk of chunks) {
     let voiceFound = false;
     let voiceRegExp = null;
     let voiceCodeToUse = null;
 
-    previousVoiceCode = voiceCode;
     voiceCode = null;
-
     if (!configObj.stickyVoices) voiceCode = configObj.defaultVoice;
 
     for (const characterVoice of characterVoices) {
@@ -53,39 +50,22 @@ async function readTranscript() {
       }
     }
 
-    if (!voiceFound) {
-      voiceCode = configObj.defaultVoice;
-    }
+    if (!voiceFound) voiceCode = configObj.defaultVoice;
 
     voiceCodeToUse =
-      !voiceFound && configObj.stickyVoices && previousVoiceCode
-        ? previousVoiceCode
-        : voiceCode;
+      !voiceFound && configObj.stickyVoices ? previousVoiceCode : voiceCode;
+    previousVoiceCode = voiceCodeToUse;
 
-    console.log(
-      `chunk: ${chunk}, voiceFound: ${voiceFound}, previousVoiceCode: ${previousVoiceCode}, voiceCode: ${voiceCode}, voiceCodeToUse: ${voiceCodeToUse}`
-    );
-
-    const textToSpeak = configObj.removeVoiceRegexpFromInput
-      ? chunk.replace(voiceRegExp, "")
-      : chunk;
+    const textToSpeak = chunk.replace(voiceRegExp, "");
 
     if (wouldExceedQuota(stats, voiceCodeToUse, textToSpeak.length)) {
       throw new Error("Processing aborted, would exceed free quota!");
     }
 
-    const languageCode =
-      !voiceFound && configObj.stickyVoices && previousVoiceCode
-        ? previousVoiceCode.split("-")[0] +
-          "-" +
-          previousVoiceCode.split("-")[1]
-        : voiceCode.split("-")[0] + "-" + voiceCode.split("-")[1];
-
     try {
       const response = await configObj.synthesizer.synthesize(
         configObj.synthesizer.createRequestObject(
           textToSpeak,
-          languageCode,
           voiceCodeToUse,
           configObj.outputFileFormat.toUpperCase()
         )
