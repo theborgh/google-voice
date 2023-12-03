@@ -9,9 +9,10 @@ const {
 const { checkForInvalidVoices } = require("./validation");
 const { getVoiceType, writeOutputToFile } = require("./utils");
 
-async function readTranscript() {
+let stats = readStats();
+
+async function readTranscript(stats) {
   let inputText = fs.readFileSync(configObj.inputFile, "utf8");
-  const stats = readStats();
   const { characterVoices } = configObj;
   const initialStats = JSON.parse(JSON.stringify(stats));
   const chunks = inputText.split(configObj.chunkSplitRegExp);
@@ -86,11 +87,15 @@ async function readTranscript() {
 
   writeOutputToFile(audioContent, configObj);
   logStatsToConsole(stats, initialStats, startTime, configObj);
-  writeStatsToFile(stats);
+
+  return stats;
 }
 
 try {
-  readTranscript();
+  stats = readTranscript(stats);
+  console.log("Stats object: ", stats);
 } catch (err) {
   console.error("Error: ", err);
+} finally {
+  writeStatsToFile(stats);
 }
