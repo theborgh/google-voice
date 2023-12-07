@@ -2,15 +2,41 @@ const fs = require("fs");
 const { freeTiers } = require("./googleVoiceData");
 const { getVoiceType } = require("./utils");
 
+const areStatsValid = (stats) => {
+  if (Object.keys(stats).length < 2) return false;
+
+  for (const entry in stats) {
+    if (entry.toString().split(" ")[1] === "d") {
+      if (stats[entry]?.period?.length !== 10) return false;
+    } else if (entry.toString().split(" ")[1] === "m") {
+      if (stats[entry]?.period?.length !== 7) return false;
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 const readStats = () => {
   const statsText = fs.readFileSync("stats.csv", "utf8");
   const entries = statsText.split("\r\n");
-  const stats = {};
+  let stats = {};
   const today = new Date();
 
   for (const entry of entries) {
     const [voiceType, period, charCount] = entry.split(",");
     stats[voiceType] = { period, charCount: parseInt(charCount) };
+  }
+
+  console.log("Stats read from file: ", stats);
+  if (!areStatsValid(stats)) {
+    stats = {
+      "WaveNet d": { period: today.toISOString().slice(0, 10), charCount: 0 },
+      "WaveNet m": { period: today.toISOString().slice(0, 7), charCount: 0 },
+      "Standard d": { period: today.toISOString().slice(0, 10), charCount: 0 },
+      "Standard m": { period: today.toISOString().slice(0, 7), charCount: 0 },
+    };
   }
 
   // Update stats if needed

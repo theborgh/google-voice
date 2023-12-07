@@ -91,11 +91,11 @@ async function readTranscript(stats) {
   return stats;
 }
 
-try {
-  stats = readTranscript(stats);
-  console.log("Stats object: ", stats);
-} catch (err) {
-  console.error("Error: ", err);
-} finally {
-  writeStatsToFile(stats);
-}
+readTranscript(stats)
+  .then((stats) => {
+    writeStatsToFile(stats);
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
