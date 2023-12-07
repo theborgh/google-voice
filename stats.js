@@ -1,4 +1,5 @@
 const fs = require("fs");
+const configObj = require("./config");
 const { freeTiers } = require("./googleVoiceData");
 const { getVoiceType } = require("./utils");
 
@@ -33,12 +34,18 @@ const readStats = () => {
 
   if (!areStatsValid(stats)) {
     console.log("Stats are invalid, resetting to today's date");
-    stats = {
-      "WaveNet d": { period: today.toISOString().slice(0, 10), charCount: 0 },
-      "WaveNet m": { period: today.toISOString().slice(0, 7), charCount: 0 },
-      "Standard d": { period: today.toISOString().slice(0, 10), charCount: 0 },
-      "Standard m": { period: today.toISOString().slice(0, 7), charCount: 0 },
-    };
+
+    stats = {};
+    configObj.loggedVoiceTypes.forEach((voiceType) => {
+      stats[voiceType + " d"] = {
+        period: today.toISOString().slice(0, 10),
+        charCount: 0,
+      };
+      stats[voiceType + " m"] = {
+        period: today.toISOString().slice(0, 7),
+        charCount: 0,
+      };
+    });
   }
 
   // Update stats if needed
