@@ -29,8 +29,10 @@ const readStats = () => {
     stats[voiceType] = { period, charCount: parseInt(charCount) };
   }
 
-  console.log("Stats read from file: ", stats);
+  console.log("Attempting to read stats from file: ", stats);
+
   if (!areStatsValid(stats)) {
+    console.log("Stats are invalid, resetting to today's date");
     stats = {
       "WaveNet d": { period: today.toISOString().slice(0, 10), charCount: 0 },
       "WaveNet m": { period: today.toISOString().slice(0, 7), charCount: 0 },
