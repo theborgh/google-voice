@@ -9,7 +9,7 @@ The speech synthesis engine used is abstracted, so that the same script can be u
 Clone this repository
 
 ```bash
-git clone https://github.com/theborgh/google-voice.git
+git clone https://github.com/theborgh/speak-transcript.git
 ```
 
 Install dependencies
