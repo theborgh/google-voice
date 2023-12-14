@@ -31,7 +31,7 @@ You can now run the script:
 npm start
 ```
 
-it will generate a single audio file named `output.mp3` (there is a sample output in output.sample.mp3).
+it will generate a single audio file named `output.mp3` (there is a sample output in `output.sample.mp3`).
 
 # Contributing
 
