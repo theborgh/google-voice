@@ -1,6 +1,6 @@
-Node.js script that generates audio files from text files using Google Cloud Text-to-Speech API.
+This Node.js script generates audio files from text files using the Google Cloud Text-to-Speech API. The sample configuration file (`config.sample.js`) is set up to read legal transcripts, although with some knowledge of regular expressions it can be adapted to a number of other use cases with little effort.
 
-This script processes input text via configurable regular expressions to segment the input and then decide which voice is used for each segment. It also keeps track of monthly usage and prevents requests to avoid exceeding a set quota.
+The script processes input text via configurable regular expressions to segment it into chunks and then decide which voice is used to speak each chunk. It also keeps track of monthly API usage (see `googleVoiceData.js` to set up the limits) and prevents requests exceeding a set quota.
 
 The speech synthesis engine used is abstracted, so that the same script can be used with multiple engines with minimal code changes.
 
@@ -31,4 +31,8 @@ You can now run the script:
 npm start
 ```
 
-it will generate a single audio file named `output.mp3`.
+it will generate a single audio file named `output.mp3` (there is a sample output in output.sample.mp3).
+
+# Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

@@ -3,9 +3,9 @@ const client = new textToSpeech.TextToSpeechClient();
 
 // See https://cloud.google.com/text-to-speech/pricing
 const freeTiers = [
-  { voiceType: "Neural2", freeCharsPerMonth: 800_000 }, // 1_000_000 bytes
-  { voiceType: "Polyglot", freeCharsPerMonth: 800_000 }, // 1_000_000 bytes
-  { voiceType: "Studio", freeCharsPerMonth: 80_000 }, // 100_000 bytes
+  { voiceType: "Neural2", freeCharsPerMonth: 1_000_000 }, // 1_000_000 bytes
+  { voiceType: "Polyglot", freeCharsPerMonth: 1_000_000 }, // 1_000_000 bytes
+  { voiceType: "Studio", freeCharsPerMonth: 100_000 }, // 100_000 bytes
   { voiceType: "WaveNet", freeCharsPerMonth: 1_000_000 },
   { voiceType: "Standard", freeCharsPerMonth: 4_000_000 },
 ];
